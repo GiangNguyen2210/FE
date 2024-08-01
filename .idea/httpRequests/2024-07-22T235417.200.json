@@ -1,0 +1,11 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 3,
+    "requestID": 12,
+    "amount": 33223233445.00,
+    "paymentDate": "2024-07-22T16:54:17.765363600Z",
+    "paymentType": "Paypal",
+    "status": "Paid"
+  }
+}

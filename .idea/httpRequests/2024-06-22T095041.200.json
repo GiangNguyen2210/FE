@@ -1,0 +1,13 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 1002,
+    "requestID": 1002,
+    "designID": null,
+    "designStaff": null,
+    "productionStaff": null,
+    "status": "New",
+    "createdAt": "2024-06-22T02:50:41.064006800Z",
+    "description": null
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 2,
+      "designName": "asdasdfasd",
+      "description": "asdasdasdasdf",
+      "listURLImage": [
+        "12",
+        "23"
+      ],
+      "category": null,
+      "mainStone": null,
+      "subStone": null,
+      "materialWeight": null,
+      "materialName": null
+    }
+  ]
+}

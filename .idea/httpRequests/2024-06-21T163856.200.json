@@ -1,0 +1,11 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 0,
+    "requestID": 0,
+    "createdAt": null,
+    "approvedAt": null,
+    "approvedBy": 0,
+    "cost": null
+  }
+}

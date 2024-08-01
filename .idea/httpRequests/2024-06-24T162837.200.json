@@ -1,0 +1,25 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "month": 5,
+      "totalRevenue": null
+    },
+    {
+      "month": 5,
+      "totalRevenue": null
+    },
+    {
+      "month": 5,
+      "totalRevenue": null
+    },
+    {
+      "month": 5,
+      "totalRevenue": null
+    },
+    {
+      "month": 5,
+      "totalRevenue": null
+    }
+  ]
+}

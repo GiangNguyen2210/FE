@@ -1,0 +1,45 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 1,
+      "description": "good test",
+      "customerID": 1003,
+      "saleStaffID": 3002,
+      "status": "Ordering",
+      "createdAt": "2024-06-11T08:46:41.340Z",
+      "recievedAt": "2024-06-14T05:19:32.817Z",
+      "endAt": null
+    },
+    {
+      "id": 2,
+      "description": "basdasd asd asdasda sd",
+      "customerID": 3002,
+      "saleStaffID": null,
+      "status": "Pending quotation",
+      "createdAt": "2024-06-17T03:59:22.293Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 1002,
+      "description": "asdasdasdas",
+      "customerID": 1003,
+      "saleStaffID": null,
+      "status": "Pending quotation",
+      "createdAt": "2024-06-18T18:04:00.370Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 2002,
+      "description": "neo",
+      "customerID": 1003,
+      "saleStaffID": null,
+      "status": "Unapproved",
+      "createdAt": "2024-06-21T09:36:57.030Z",
+      "recievedAt": null,
+      "endAt": null
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 6,
+    "userName": "cust",
+    "password": "$2a$10$ysQqveFiNiVBbj8IcClsbugBhMVGmaZhU45J9mQRDUHibeCa1vjiy",
+    "email": "a@gmail.com",
+    "address": "",
+    "title": "CUSTOMER",
+    "noPassword": null
+  }
+}

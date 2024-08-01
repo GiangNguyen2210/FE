@@ -1,0 +1,47 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 2,
+      "designName": "asdasdfasd",
+      "description": "asdasdasdasdf",
+      "listURLImage": [
+        "12",
+        "23"
+      ],
+      "category": null,
+      "mainStoneId": null,
+      "subStoneId": null,
+      "materialWeight": null,
+      "materialName": null
+    },
+    {
+      "id": 1003,
+      "designName": "4",
+      "description": "1003",
+      "listURLImage": [
+        "2",
+        "3"
+      ],
+      "category": "RING",
+      "mainStoneId": 1,
+      "subStoneId": 1,
+      "materialWeight": 2.00,
+      "materialName": "Gold"
+    },
+    {
+      "id": 2003,
+      "designName": "1003",
+      "description": "1003",
+      "listURLImage": [
+        "2",
+        "3"
+      ],
+      "category": "RING",
+      "mainStoneId": 1,
+      "subStoneId": 1,
+      "materialWeight": 2.00,
+      "materialName": "Gold"
+    }
+  ]
+}

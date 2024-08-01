@@ -1,0 +1,13 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 2002,
+    "description": "neo",
+    "customerID": 1003,
+    "saleStaffID": null,
+    "status": "Unapproved",
+    "createdAt": "2024-06-21T09:36:57.030306400Z",
+    "recievedAt": null,
+    "endAt": null
+  }
+}

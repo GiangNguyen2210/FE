@@ -1,0 +1,1246 @@
+Index: SWP/src/main/java/com/backendVn/SWP/services/RequestService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.backendVn.SWP.services;\r\n\r\nimport com.backendVn.SWP.dtos.request.RequestCreationRequestForCustomerDesign;\r\nimport com.backendVn.SWP.dtos.response.RequestResponse;\r\nimport com.backendVn.SWP.dtos.response.UserResponse;\r\nimport com.backendVn.SWP.entities.Material;\r\nimport com.backendVn.SWP.entities.Request;\r\nimport com.backendVn.SWP.entities.User;\r\nimport com.backendVn.SWP.exception.AppException;\r\nimport com.backendVn.SWP.exception.ErrorCode;\r\nimport com.backendVn.SWP.mappers.RequestMapper;\r\nimport com.backendVn.SWP.mappers.UserMapper;\r\nimport com.backendVn.SWP.repositories.MaterialRepository;\r\nimport com.backendVn.SWP.repositories.QuotationRepository;\r\nimport com.backendVn.SWP.repositories.RequestRepository;\r\nimport com.backendVn.SWP.repositories.UserRepository;\r\nimport lombok.RequiredArgsConstructor;\r\nimport lombok.experimental.FieldDefaults;\r\nimport org.slf4j.Logger;\r\nimport org.slf4j.LoggerFactory;\r\nimport org.springframework.security.core.context.SecurityContextHolder;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.math.BigDecimal;\r\nimport java.time.Instant;\r\nimport java.time.LocalDateTime;\r\nimport java.time.ZoneId;\r\nimport java.time.format.DateTimeFormatter;\r\nimport java.util.List;\r\n\r\n@Service\r\n@RequiredArgsConstructor\r\n@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)\r\npublic class RequestService {\r\n    private static final Logger log = LoggerFactory.getLogger(RequestService.class);\r\n    RequestRepository requestRepository;\r\n    UserRepository userRepository;\r\n    RequestMapper requestMapper;\r\n    UserMapper userMapper;\r\n    MaterialRepository materialRepository;\r\n\r\n    public Instant stringToInstant(String input){\r\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"dd/MM/yyyy HH:mm\");\r\n        LocalDateTime localDateTime = LocalDateTime.parse(input, formatter);\r\n        return localDateTime.atZone(ZoneId.systemDefault()).toInstant();\r\n    }\r\n\r\n    public BigDecimal makeProduceCost(String input) {\r\n        return switch (input) {\r\n            case \"RING\" -> BigDecimal.valueOf(1500);\r\n            case \"NECKLACE\" -> BigDecimal.valueOf(2200);\r\n            case \"BRACELET\" -> BigDecimal.valueOf(2000);\r\n            default -> BigDecimal.valueOf(1800);\r\n        };\r\n    }\r\n\r\n\r\n    public RequestResponse createRequest(RequestCreationRequestForCustomerDesign request, Integer userId) {\r\n        User user = userRepository.findById(userId)\r\n                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));\r\n\r\n        Request theRequest = requestMapper.toRequest(request);\r\n        theRequest.setCustomerID(user);\r\n\r\n        Material goldMaterial = findOrCreateGoldMaterial(request);\r\n\r\n        theRequest.setMaterialID(goldMaterial);\r\n        theRequest.setMainStone(getMaterialById(request.getMainStoneId()));\r\n        theRequest.setSubStone(getMaterialById(request.getSubStoneId()));\r\n        theRequest.setProduceCost(makeProduceCost(request.getCategory()));\r\n\r\n        return requestMapper.toRequestResponse(requestRepository.save(theRequest));\r\n    }\r\n\r\n    private Material getMaterialById(Integer materialId) {\r\n        return materialId == 0 ? null : materialRepository.findById(materialId)\r\n                .orElseThrow(() -> new AppException(ErrorCode.MATERIAL_NOT_FOUND));\r\n    }\r\n\r\n    private Material findOrCreateGoldMaterial(RequestCreationRequestForCustomerDesign request) {\r\n        return materialRepository.findByMaterialNameAndUpdateTime(\r\n                        request.getGoldType(), stringToInstant(request.getUpdated()))\r\n                .orElseGet(() -> {\r\n                    Material newGoldType = new Material();\r\n                    newGoldType.setMaterialName(request.getGoldType());\r\n                    newGoldType.setType(\"Gold\");\r\n                    newGoldType.setUpdateTime(stringToInstant(request.getUpdated()));\r\n                    newGoldType.setPricePerUnit(BigDecimal.valueOf(request.getSellCost()));\r\n                    return materialRepository.save(newGoldType);\r\n                });\r\n    }\r\n\r\n    public RequestResponse updateRequestByCustomer(Integer id, RequestCreationRequestForCustomerDesign requestCreationRequestForCustomerDesign) {\r\n        Request request = requestRepository.findById(id)\r\n                .orElseThrow(() -> new AppException(ErrorCode.REQUEST_NOT_FOUND));\r\n\r\n        if (\"Pending Quotation\".equalsIgnoreCase(request.getStatus())) {\r\n            throw new AppException(ErrorCode.REQUEST_STATUS_NOT_ALLOWED);\r\n        }\r\n\r\n        requestMapper.updateRequestFromDto(request, requestCreationRequestForCustomerDesign);\r\n\r\n        return requestMapper.toRequestResponse(requestRepository.save(request));\r\n    }\r\n\r\n    public RequestResponse updateRequestBySales(Integer id) {\r\n        Request request = requestRepository.findById(id)\r\n                .orElseThrow(() -> new AppException(ErrorCode.REQUEST_NOT_FOUND));\r\n\r\n        var context = SecurityContextHolder.getContext();\r\n        String username = context.getAuthentication().getName();\r\n\r\n        User saleStaff = userRepository.findByUserName(username)\r\n                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));\r\n\r\n        request.setSaleStaffid(saleStaff);\r\n        request.setRecievedAt(Instant.now());\r\n        request.setStatus(\"Processing\");\r\n\r\n        return requestMapper.toRequestResponse(requestRepository.save(request));\r\n    }\r\n\r\n\r\n    public void deleteRequest(Integer id) {\r\n        Request request = requestRepository.findById(id)\r\n                .orElseThrow(() -> new AppException(ErrorCode.REQUEST_NOT_FOUND));\r\n        requestRepository.delete(request);\r\n    }\r\n\r\n    public List<RequestResponse> getAllRequests() {\r\n        return requestRepository.findAll().stream()\r\n                .map(requestMapper::toRequestResponse)\r\n                .toList();\r\n    }\r\n\r\n    public RequestResponse getRequestById(Integer id) {\r\n        Request request = requestRepository.findById(id)\r\n                .orElseThrow(() -> new AppException(ErrorCode.REQUEST_NOT_FOUND));\r\n        return requestMapper.toRequestResponse(request);\r\n    }\r\n\r\n    public List<RequestResponse> getRequestsByCustomerId(Integer customerId) {\r\n        User customer = userRepository.findById(customerId)\r\n                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));\r\n        List<Request> requests = requestRepository.findAllByCustomerId(customer);\r\n        return requests.stream()\r\n                .map(requestMapper::toRequestResponse)\r\n                .toList();\r\n    }\r\n\r\n    public List<RequestResponse> getUnrecievedRequests() {\r\n        return requestRepository.findAllBySaleStaffidNull().stream()\r\n                .map(requestMapper::toRequestResponse)\r\n                .toList();\r\n    }\r\n\r\n    public List<RequestResponse> getRequestBySaleStaffId(Integer saleStaffId){\r\n        User user = userRepository.findById(saleStaffId)\r\n                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));\r\n\r\n        return requestRepository.findAllBySaleStaffid(user).stream()\r\n                .map(requestMapper::toRequestResponse)\r\n                .toList();\r\n    }\r\n\r\n    public UserResponse getUserById(Integer id) {\r\n        return userMapper.toUserResponse(userRepository.findById(id)\r\n                .orElseThrow(() -> new RuntimeException(\"User not found\")));\r\n    }\r\n\r\n    public RequestResponse  approveQuotationFromCustomer(Integer requestId) {\r\n        Request request = requestRepository.findById(requestId)\r\n                .orElseThrow(() -> new AppException(ErrorCode.REQUEST_NOT_FOUND));\r\n\r\n        request.setStatus(\"Ordering\");\r\n\r\n        Request savedRequest = requestRepository.save(request);\r\n\r\n        return requestMapper.toRequestResponse(savedRequest);\r\n    }\r\n\r\n    public RequestResponse denyQuotationFromCustomer(Integer requestId) {\r\n        Request request = requestRepository.findById(requestId)\r\n                .orElseThrow(() -> new AppException(ErrorCode.REQUEST_NOT_FOUND));\r\n\r\n        request.setStatus(\"Unapproved\");\r\n\r\n        Request savedRequest = requestRepository.save(request);\r\n\r\n        return requestMapper.toRequestResponse(savedRequest);\r\n    }\r\n\r\n    public List<RequestResponse> getListOfRequestQuotations() {\r\n        List<Request> requests = requestRepository.findByStatus(\"Pending quotation\");\r\n        return requests.stream().map(requestMapper::toRequestResponse).toList();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/src/main/java/com/backendVn/SWP/services/RequestService.java b/SWP/src/main/java/com/backendVn/SWP/services/RequestService.java
+--- a/SWP/src/main/java/com/backendVn/SWP/services/RequestService.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ b/SWP/src/main/java/com/backendVn/SWP/services/RequestService.java	(date 1720360900453)
+@@ -142,7 +142,7 @@
+     public List<RequestResponse> getRequestsByCustomerId(Integer customerId) {
+         User customer = userRepository.findById(customerId)
+                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+-        List<Request> requests = requestRepository.findAllByCustomerId(customer);
++        List<Request> requests = requestRepository.findAllByCustomerIDAndStatusIsNotLike(customer, "Disable");
+         return requests.stream()
+                 .map(requestMapper::toRequestResponse)
+                 .toList();
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/MaterialMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/MaterialMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/MaterialMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/MaterialMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,58 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.MaterialRequest;
+-import com.backendVn.SWP.dtos.response.MaterialResponse;
+-import com.backendVn.SWP.entities.Material;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class MaterialMapperImpl implements MaterialMapper {
+-
+-    @Override
+-    public Material toMaterial(MaterialRequest material) {
+-        if ( material == null ) {
+-            return null;
+-        }
+-
+-        Material.MaterialBuilder material1 = Material.builder();
+-
+-        material1.type( material.getType() );
+-        material1.pricePerUnit( material.getPricePerUnit() );
+-        material1.materialName( material.getMaterialName() );
+-
+-        return material1.build();
+-    }
+-
+-    @Override
+-    public MaterialResponse toMaterialResponse(Material material) {
+-        if ( material == null ) {
+-            return null;
+-        }
+-
+-        MaterialResponse.MaterialResponseBuilder materialResponse = MaterialResponse.builder();
+-
+-        materialResponse.id( material.getId() );
+-        materialResponse.type( material.getType() );
+-        materialResponse.pricePerUnit( material.getPricePerUnit() );
+-        materialResponse.materialName( material.getMaterialName() );
+-        materialResponse.updateTime( material.getUpdateTime() );
+-
+-        return materialResponse.build();
+-    }
+-
+-    @Override
+-    public void updateMaterial(Material material, MaterialRequest materialRequest) {
+-        if ( materialRequest == null ) {
+-            return;
+-        }
+-
+-        material.setType( materialRequest.getType() );
+-        material.setPricePerUnit( materialRequest.getPricePerUnit() );
+-        material.setMaterialName( materialRequest.getMaterialName() );
+-    }
+-}
+Index: SWP/target/classes/application.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/classes/application.yaml b/SWP/target/classes/application.yaml
+deleted file mode 100644
+--- a/SWP/target/classes/application.yaml	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,21 +0,0 @@
+-spring:
+-  datasource:
+-    url: jdbc:sqlserver://localhost:1433;databaseName=SWP1;encrypt=false
+-    username: sa
+-    password: Abc@1234
+-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+-  jpa:
+-    hibernate:
+-      ddl-auto: none
+-    properties:
+-      hibernate:
+-        dialect: org.hibernate.dialect.SQLServerDialect
+-
+-outbound:
+-  identity:
+-    client-id: ""
+-    client-secret: ""
+-    redirect-uri: ""
+-
+-jwt:
+-  signerKey: "ha+MtmyenlAuB5AZutl1uNHRhrkmDGfFI7xpExHY50pZP+50iuif23teGaUwNa1I"
+\ No newline at end of file
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,95 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.RequestCreationRequestForCustomerDesign;
+-import com.backendVn.SWP.dtos.response.RequestResponse;
+-import com.backendVn.SWP.entities.Request;
+-import com.backendVn.SWP.entities.User;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class RequestMapperImpl implements RequestMapper {
+-
+-    @Override
+-    public Request toRequest(RequestCreationRequestForCustomerDesign requestCreationRequestForCustomerDesign) {
+-        if ( requestCreationRequestForCustomerDesign == null ) {
+-            return null;
+-        }
+-
+-        Request.RequestBuilder request = Request.builder();
+-
+-        request.description( requestCreationRequestForCustomerDesign.getDescription() );
+-        request.materialWeight( requestCreationRequestForCustomerDesign.getMaterialWeight() );
+-        request.category( requestCreationRequestForCustomerDesign.getCategory() );
+-
+-        request.createdAt( java.time.Instant.now() );
+-        request.status( "Unapproved" );
+-
+-        return request.build();
+-    }
+-
+-    @Override
+-    public void updateRequestFromDto(Request request, RequestCreationRequestForCustomerDesign requestCreationRequestForCustomerDesign) {
+-        if ( requestCreationRequestForCustomerDesign == null ) {
+-            return;
+-        }
+-
+-        request.setDescription( requestCreationRequestForCustomerDesign.getDescription() );
+-        request.setMaterialWeight( requestCreationRequestForCustomerDesign.getMaterialWeight() );
+-        request.setCategory( requestCreationRequestForCustomerDesign.getCategory() );
+-    }
+-
+-    @Override
+-    public RequestResponse toRequestResponse(Request request) {
+-        if ( request == null ) {
+-            return null;
+-        }
+-
+-        RequestResponse.RequestResponseBuilder requestResponse = RequestResponse.builder();
+-
+-        requestResponse.customerID( requestCustomerIDId( request ) );
+-        requestResponse.saleStaffID( requestSaleStaffidId( request ) );
+-        requestResponse.id( request.getId() );
+-        requestResponse.description( request.getDescription() );
+-        requestResponse.status( request.getStatus() );
+-        requestResponse.createdAt( request.getCreatedAt() );
+-        requestResponse.recievedAt( request.getRecievedAt() );
+-        requestResponse.endAt( request.getEndAt() );
+-
+-        return requestResponse.build();
+-    }
+-
+-    private Integer requestCustomerIDId(Request request) {
+-        if ( request == null ) {
+-            return null;
+-        }
+-        User customerID = request.getCustomerID();
+-        if ( customerID == null ) {
+-            return null;
+-        }
+-        Integer id = customerID.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer requestSaleStaffidId(Request request) {
+-        if ( request == null ) {
+-            return null;
+-        }
+-        User saleStaffid = request.getSaleStaffid();
+-        if ( saleStaffid == null ) {
+-            return null;
+-        }
+-        Integer id = saleStaffid.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/WarrantyCardMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/WarrantyCardMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/WarrantyCardMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/WarrantyCardMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,51 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.WarrantyCardCreationRequest;
+-import com.backendVn.SWP.dtos.response.WarrantyCardResponse;
+-import com.backendVn.SWP.entities.WarrantyCard;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class WarrantyCardMapperImpl implements WarrantyCardMapper {
+-
+-    @Override
+-    public WarrantyCard toWarrantyCard(WarrantyCardCreationRequest warrantyCardCreationRequest) {
+-        if ( warrantyCardCreationRequest == null ) {
+-            return null;
+-        }
+-
+-        WarrantyCard.WarrantyCardBuilder warrantyCard = WarrantyCard.builder();
+-
+-        warrantyCard.endAt( warrantyCardCreationRequest.getEndAt() );
+-
+-        return warrantyCard.build();
+-    }
+-
+-    @Override
+-    public void updateWarranty(WarrantyCard warrantyCard, WarrantyCardCreationRequest warrantyCardCreationRequest) {
+-        if ( warrantyCardCreationRequest == null ) {
+-            return;
+-        }
+-
+-        warrantyCard.setEndAt( warrantyCardCreationRequest.getEndAt() );
+-    }
+-
+-    @Override
+-    public WarrantyCardResponse toWarrantyCardResponse(WarrantyCard warrantyCard) {
+-        if ( warrantyCard == null ) {
+-            return null;
+-        }
+-
+-        WarrantyCardResponse.WarrantyCardResponseBuilder warrantyCardResponse = WarrantyCardResponse.builder();
+-
+-        warrantyCardResponse.createdAt( warrantyCard.getCreatedAt() );
+-        warrantyCardResponse.endAt( warrantyCard.getEndAt() );
+-
+-        return warrantyCardResponse.build();
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/UserMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/UserMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/UserMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/UserMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,82 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.CustomerRegisterRequest;
+-import com.backendVn.SWP.dtos.request.UserCreationRequest;
+-import com.backendVn.SWP.dtos.request.UserUpdateRequest;
+-import com.backendVn.SWP.dtos.response.UserResponse;
+-import com.backendVn.SWP.entities.User;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class UserMapperImpl implements UserMapper {
+-
+-    @Override
+-    public User toUser(UserCreationRequest userCreationRequest) {
+-        if ( userCreationRequest == null ) {
+-            return null;
+-        }
+-
+-        User.UserBuilder user = User.builder();
+-
+-        user.userName( userCreationRequest.getUserName() );
+-        user.password( userCreationRequest.getPassword() );
+-        user.email( userCreationRequest.getEmail() );
+-        user.address( userCreationRequest.getAddress() );
+-        user.title( userCreationRequest.getTitle() );
+-
+-        return user.build();
+-    }
+-
+-    @Override
+-    public void updateUser(User user, UserUpdateRequest userUpdateRequest) {
+-        if ( userUpdateRequest == null ) {
+-            return;
+-        }
+-
+-        user.setUserName( userUpdateRequest.getUserName() );
+-        user.setPassword( userUpdateRequest.getPassword() );
+-        user.setEmail( userUpdateRequest.getEmail() );
+-        user.setAddress( userUpdateRequest.getAddress() );
+-        user.setTitle( userUpdateRequest.getTitle() );
+-    }
+-
+-    @Override
+-    public UserResponse toUserResponse(User user) {
+-        if ( user == null ) {
+-            return null;
+-        }
+-
+-        UserResponse.UserResponseBuilder userResponse = UserResponse.builder();
+-
+-        userResponse.id( user.getId() );
+-        userResponse.userName( user.getUserName() );
+-        userResponse.password( user.getPassword() );
+-        userResponse.email( user.getEmail() );
+-        userResponse.address( user.getAddress() );
+-        userResponse.title( user.getTitle() );
+-
+-        return userResponse.build();
+-    }
+-
+-    @Override
+-    public User toUser(CustomerRegisterRequest customerRegisterRequest) {
+-        if ( customerRegisterRequest == null ) {
+-            return null;
+-        }
+-
+-        User.UserBuilder user = User.builder();
+-
+-        user.userName( customerRegisterRequest.getUserName() );
+-        user.password( customerRegisterRequest.getPassword() );
+-        user.email( customerRegisterRequest.getEmail() );
+-        user.address( customerRegisterRequest.getAddress() );
+-        user.title( customerRegisterRequest.getTitle() );
+-
+-        return user.build();
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/DesignMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/DesignMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/DesignMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/DesignMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,128 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.CompanyDesignModifyRequest;
+-import com.backendVn.SWP.dtos.request.DesignCreationRequest;
+-import com.backendVn.SWP.dtos.request.DesignUpdateRequest;
+-import com.backendVn.SWP.dtos.response.DesignResponse;
+-import com.backendVn.SWP.entities.Design;
+-import com.backendVn.SWP.entities.Material;
+-import java.util.ArrayList;
+-import java.util.List;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class DesignMapperImpl implements DesignMapper {
+-
+-    @Override
+-    public Design toDesign(DesignCreationRequest designCreationRequest) {
+-        if ( designCreationRequest == null ) {
+-            return null;
+-        }
+-
+-        Design.DesignBuilder design = Design.builder();
+-
+-        design.description( designCreationRequest.getDescription() );
+-
+-        return design.build();
+-    }
+-
+-    @Override
+-    public void updateDesign(Design design, DesignUpdateRequest designUpdateRequest) {
+-        if ( designUpdateRequest == null ) {
+-            return;
+-        }
+-
+-        design.setDescription( designUpdateRequest.getDescription() );
+-    }
+-
+-    @Override
+-    public DesignResponse toDesignResponse(Design design, List<String> listURLImage) {
+-        if ( design == null && listURLImage == null ) {
+-            return null;
+-        }
+-
+-        DesignResponse.DesignResponseBuilder designResponse = DesignResponse.builder();
+-
+-        if ( design != null ) {
+-            designResponse.mainStoneId( designMainStoneId( design ) );
+-            designResponse.subStoneId( designSubStoneId( design ) );
+-            designResponse.id( design.getId() );
+-            designResponse.designName( design.getDesignName() );
+-            designResponse.description( design.getDescription() );
+-            designResponse.category( design.getCategory() );
+-            designResponse.materialWeight( design.getMaterialWeight() );
+-            designResponse.materialName( design.getMaterialName() );
+-        }
+-        List<String> list = listURLImage;
+-        if ( list != null ) {
+-            designResponse.listURLImage( new ArrayList<String>( list ) );
+-        }
+-
+-        return designResponse.build();
+-    }
+-
+-    @Override
+-    public Design modifyCompanyDesign(CompanyDesignModifyRequest request) {
+-        if ( request == null ) {
+-            return null;
+-        }
+-
+-        Design.DesignBuilder design = Design.builder();
+-
+-        design.designName( request.getDesignName() );
+-        design.description( request.getDescription() );
+-        design.category( request.getCategory() );
+-        design.materialWeight( request.getMaterialWeight() );
+-        design.materialName( request.getMaterialName() );
+-
+-        return design.build();
+-    }
+-
+-    @Override
+-    public void updateCompanyDesign(Design design, CompanyDesignModifyRequest request) {
+-        if ( request == null ) {
+-            return;
+-        }
+-
+-        design.setDesignName( request.getDesignName() );
+-        design.setDescription( request.getDescription() );
+-        design.setCategory( request.getCategory() );
+-        design.setMaterialWeight( request.getMaterialWeight() );
+-        design.setMaterialName( request.getMaterialName() );
+-    }
+-
+-    private Integer designMainStoneId(Design design) {
+-        if ( design == null ) {
+-            return null;
+-        }
+-        Material mainStone = design.getMainStone();
+-        if ( mainStone == null ) {
+-            return null;
+-        }
+-        Integer id = mainStone.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer designSubStoneId(Design design) {
+-        if ( design == null ) {
+-            return null;
+-        }
+-        Material subStone = design.getSubStone();
+-        if ( subStone == null ) {
+-            return null;
+-        }
+-        Integer id = subStone.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,56 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.InvoiceUpdateRequest;
+-import com.backendVn.SWP.dtos.response.InvoiceResponse;
+-import com.backendVn.SWP.entities.Invoice;
+-import com.backendVn.SWP.entities.Request;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class InvoiceMapperImpl implements InvoiceMapper {
+-
+-    @Override
+-    public void updateInvoice(Invoice invoice, InvoiceUpdateRequest invoiceUpdateRequest) {
+-        if ( invoiceUpdateRequest == null ) {
+-            return;
+-        }
+-
+-        invoice.setTotalCost( invoiceUpdateRequest.getTotalCost() );
+-    }
+-
+-    @Override
+-    public InvoiceResponse toInvoiceResponse(Invoice invoice) {
+-        if ( invoice == null ) {
+-            return null;
+-        }
+-
+-        InvoiceResponse.InvoiceResponseBuilder invoiceResponse = InvoiceResponse.builder();
+-
+-        invoiceResponse.requestID( invoiceRequestIDId( invoice ) );
+-        invoiceResponse.id( invoice.getId() );
+-        invoiceResponse.totalCost( invoice.getTotalCost() );
+-        invoiceResponse.createdAt( invoice.getCreatedAt() );
+-
+-        return invoiceResponse.build();
+-    }
+-
+-    private Integer invoiceRequestIDId(Invoice invoice) {
+-        if ( invoice == null ) {
+-            return null;
+-        }
+-        Request requestID = invoice.getRequestID();
+-        if ( requestID == null ) {
+-            return null;
+-        }
+-        Integer id = requestID.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceDetailMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceDetailMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceDetailMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceDetailMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,74 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.InvoiceDetailUpdateRequest;
+-import com.backendVn.SWP.dtos.response.InvoiceDetailResponse;
+-import com.backendVn.SWP.entities.Invoice;
+-import com.backendVn.SWP.entities.InvoiceDetail;
+-import com.backendVn.SWP.entities.Material;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class InvoiceDetailMapperImpl implements InvoiceDetailMapper {
+-
+-    @Override
+-    public void updateInvoiceDetail(InvoiceDetail invoiceDetail, InvoiceDetailUpdateRequest invoiceDetailUpdateRequest) {
+-        if ( invoiceDetailUpdateRequest == null ) {
+-            return;
+-        }
+-
+-        invoiceDetail.setTotalAmount( invoiceDetailUpdateRequest.getTotalAmount() );
+-        invoiceDetail.setTotalCost( invoiceDetailUpdateRequest.getTotalCost() );
+-    }
+-
+-    @Override
+-    public InvoiceDetailResponse toInvoiceDetailResponse(InvoiceDetail invoiceDetail) {
+-        if ( invoiceDetail == null ) {
+-            return null;
+-        }
+-
+-        InvoiceDetailResponse.InvoiceDetailResponseBuilder invoiceDetailResponse = InvoiceDetailResponse.builder();
+-
+-        invoiceDetailResponse.invoiceID( invoiceDetailInvoiceIDId( invoiceDetail ) );
+-        invoiceDetailResponse.materialID( invoiceDetailMaterialIDId( invoiceDetail ) );
+-        invoiceDetailResponse.id( invoiceDetail.getId() );
+-        invoiceDetailResponse.totalAmount( invoiceDetail.getTotalAmount() );
+-        invoiceDetailResponse.totalCost( invoiceDetail.getTotalCost() );
+-
+-        return invoiceDetailResponse.build();
+-    }
+-
+-    private Integer invoiceDetailInvoiceIDId(InvoiceDetail invoiceDetail) {
+-        if ( invoiceDetail == null ) {
+-            return null;
+-        }
+-        Invoice invoiceID = invoiceDetail.getInvoiceID();
+-        if ( invoiceID == null ) {
+-            return null;
+-        }
+-        Integer id = invoiceID.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer invoiceDetailMaterialIDId(InvoiceDetail invoiceDetail) {
+-        if ( invoiceDetail == null ) {
+-            return null;
+-        }
+-        Material materialID = invoiceDetail.getMaterialID();
+-        if ( materialID == null ) {
+-            return null;
+-        }
+-        Integer id = materialID.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/ProcessMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/ProcessMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/ProcessMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/ProcessMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,73 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.ProcessUpdateRequest;
+-import com.backendVn.SWP.dtos.response.ProcessResponse;
+-import com.backendVn.SWP.entities.Process;
+-import com.backendVn.SWP.entities.RequestOrder;
+-import com.backendVn.SWP.entities.User;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class ProcessMapperImpl implements ProcessMapper {
+-
+-    @Override
+-    public ProcessResponse toProcessResponse(Process process) {
+-        if ( process == null ) {
+-            return null;
+-        }
+-
+-        ProcessResponse.ProcessResponseBuilder processResponse = ProcessResponse.builder();
+-
+-        processResponse.requestOrderId( processRequestOrderidId( process ) );
+-        processResponse.updatedBy( processUpdatedById( process ) );
+-        processResponse.id( process.getId() );
+-        processResponse.updatedAt( process.getUpdatedAt() );
+-        processResponse.status( process.getStatus() );
+-
+-        return processResponse.build();
+-    }
+-
+-    @Override
+-    public void updateProcess(Process process, ProcessUpdateRequest processUpdateRequest) {
+-        if ( processUpdateRequest == null ) {
+-            return;
+-        }
+-
+-        process.setStatus( processUpdateRequest.getStatus() );
+-    }
+-
+-    private Integer processRequestOrderidId(Process process) {
+-        if ( process == null ) {
+-            return null;
+-        }
+-        RequestOrder requestOrderid = process.getRequestOrderid();
+-        if ( requestOrderid == null ) {
+-            return null;
+-        }
+-        Integer id = requestOrderid.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer processUpdatedById(Process process) {
+-        if ( process == null ) {
+-            return null;
+-        }
+-        User updatedBy = process.getUpdatedBy();
+-        if ( updatedBy == null ) {
+-            return null;
+-        }
+-        Integer id = updatedBy.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/QuotationMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/QuotationMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/QuotationMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/QuotationMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,123 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.request.QuotationCreationRequest;
+-import com.backendVn.SWP.dtos.response.AutoPricingResponse;
+-import com.backendVn.SWP.dtos.response.QuotationResponse;
+-import com.backendVn.SWP.entities.Material;
+-import com.backendVn.SWP.entities.Quotation;
+-import com.backendVn.SWP.entities.Request;
+-import com.backendVn.SWP.entities.User;
+-import java.math.BigDecimal;
+-import java.util.Date;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class QuotationMapperImpl implements QuotationMapper {
+-
+-    @Override
+-    public Quotation toQuotation(QuotationCreationRequest quotationCreationRequest) {
+-        if ( quotationCreationRequest == null ) {
+-            return null;
+-        }
+-
+-        Quotation.QuotationBuilder quotation = Quotation.builder();
+-
+-        quotation.cost( quotationCreationRequest.getCost() );
+-
+-        return quotation.build();
+-    }
+-
+-    @Override
+-    public QuotationResponse toQuotationResponse(Quotation quotation) {
+-        if ( quotation == null ) {
+-            return null;
+-        }
+-
+-        QuotationResponse.QuotationResponseBuilder quotationResponse = QuotationResponse.builder();
+-
+-        Integer id = quotationRequestIDId( quotation );
+-        if ( id != null ) {
+-            quotationResponse.requestID( id );
+-        }
+-        Integer id1 = quotationApproveById( quotation );
+-        if ( id1 != null ) {
+-            quotationResponse.approvedBy( id1 );
+-        }
+-        if ( quotation.getId() != null ) {
+-            quotationResponse.id( quotation.getId() );
+-        }
+-        if ( quotation.getCreatedAt() != null ) {
+-            quotationResponse.createdAt( Date.from( quotation.getCreatedAt() ) );
+-        }
+-        quotationResponse.approvedAt( quotation.getApprovedAt() );
+-        quotationResponse.capitalCost( quotation.getCapitalCost() );
+-        quotationResponse.cost( quotation.getCost() );
+-
+-        return quotationResponse.build();
+-    }
+-
+-    @Override
+-    public AutoPricingResponse toAutoPricingResponse(Request request) {
+-        if ( request == null ) {
+-            return null;
+-        }
+-
+-        AutoPricingResponse.AutoPricingResponseBuilder autoPricingResponse = AutoPricingResponse.builder();
+-
+-        autoPricingResponse.materialPrice( requestMaterialIDPricePerUnit( request ) );
+-        autoPricingResponse.materialWeight( request.getMaterialWeight() );
+-        autoPricingResponse.producePrice( request.getProduceCost() );
+-
+-        return autoPricingResponse.build();
+-    }
+-
+-    private Integer quotationRequestIDId(Quotation quotation) {
+-        if ( quotation == null ) {
+-            return null;
+-        }
+-        Request requestID = quotation.getRequestID();
+-        if ( requestID == null ) {
+-            return null;
+-        }
+-        Integer id = requestID.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer quotationApproveById(Quotation quotation) {
+-        if ( quotation == null ) {
+-            return null;
+-        }
+-        User approveBy = quotation.getApproveBy();
+-        if ( approveBy == null ) {
+-            return null;
+-        }
+-        Integer id = approveBy.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private BigDecimal requestMaterialIDPricePerUnit(Request request) {
+-        if ( request == null ) {
+-            return null;
+-        }
+-        Material materialID = request.getMaterialID();
+-        if ( materialID == null ) {
+-            return null;
+-        }
+-        BigDecimal pricePerUnit = materialID.getPricePerUnit();
+-        if ( pricePerUnit == null ) {
+-            return null;
+-        }
+-        return pricePerUnit;
+-    }
+-}
+Index: SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestOrderMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestOrderMapperImpl.java b/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestOrderMapperImpl.java
+deleted file mode 100644
+--- a/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestOrderMapperImpl.java	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ /dev/null	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
+@@ -1,97 +0,0 @@
+-package com.backendVn.SWP.mappers;
+-
+-import com.backendVn.SWP.dtos.response.RequestOrderResponse;
+-import com.backendVn.SWP.entities.Design;
+-import com.backendVn.SWP.entities.Request;
+-import com.backendVn.SWP.entities.RequestOrder;
+-import com.backendVn.SWP.entities.User;
+-import javax.annotation.processing.Generated;
+-import org.springframework.stereotype.Component;
+-
+-@Generated(
+-    value = "org.mapstruct.ap.MappingProcessor",
+-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
+-)
+-@Component
+-public class RequestOrderMapperImpl implements RequestOrderMapper {
+-
+-    @Override
+-    public RequestOrderResponse toRequestOrderResponse(RequestOrder requestOrder) {
+-        if ( requestOrder == null ) {
+-            return null;
+-        }
+-
+-        RequestOrderResponse.RequestOrderResponseBuilder requestOrderResponse = RequestOrderResponse.builder();
+-
+-        requestOrderResponse.requestID( requestOrderRequestIDId( requestOrder ) );
+-        requestOrderResponse.designID( requestOrderDesignIDId( requestOrder ) );
+-        requestOrderResponse.designStaff( requestOrderDesignStaffId( requestOrder ) );
+-        requestOrderResponse.productionStaff( requestOrderProductionStaffId( requestOrder ) );
+-        requestOrderResponse.description( requestOrder.getDescription() );
+-        requestOrderResponse.id( requestOrder.getId() );
+-        requestOrderResponse.status( requestOrder.getStatus() );
+-        requestOrderResponse.createdAt( requestOrder.getCreatedAt() );
+-
+-        return requestOrderResponse.build();
+-    }
+-
+-    private Integer requestOrderRequestIDId(RequestOrder requestOrder) {
+-        if ( requestOrder == null ) {
+-            return null;
+-        }
+-        Request requestID = requestOrder.getRequestID();
+-        if ( requestID == null ) {
+-            return null;
+-        }
+-        Integer id = requestID.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer requestOrderDesignIDId(RequestOrder requestOrder) {
+-        if ( requestOrder == null ) {
+-            return null;
+-        }
+-        Design designID = requestOrder.getDesignID();
+-        if ( designID == null ) {
+-            return null;
+-        }
+-        Integer id = designID.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer requestOrderDesignStaffId(RequestOrder requestOrder) {
+-        if ( requestOrder == null ) {
+-            return null;
+-        }
+-        User designStaff = requestOrder.getDesignStaff();
+-        if ( designStaff == null ) {
+-            return null;
+-        }
+-        Integer id = designStaff.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-
+-    private Integer requestOrderProductionStaffId(RequestOrder requestOrder) {
+-        if ( requestOrder == null ) {
+-            return null;
+-        }
+-        User productionStaff = requestOrder.getProductionStaff();
+-        if ( productionStaff == null ) {
+-            return null;
+-        }
+-        Integer id = productionStaff.getId();
+-        if ( id == null ) {
+-            return null;
+-        }
+-        return id;
+-    }
+-}
+Index: .idea/dataSources.local.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"dataSourceStorageLocal\" created-in=\"IU-241.18034.62\">\r\n    <data-source name=\"@localhost\" uuid=\"3dff26b9-4846-4c8c-8a40-d0ba9fcb87ef\">\r\n      <database-info product=\"Microsoft SQL Server\" version=\"16.00.4125\" jdbc-version=\"4.2\" driver-name=\"Microsoft JDBC Driver 12.2 for SQL Server\" driver-version=\"12.2.0.0\" dbms=\"MSSQL\" exact-version=\"16.0.4125\" exact-driver-version=\"12.2\">\r\n        <extra-name-characters>$#@</extra-name-characters>\r\n        <identifier-quote-string>&quot;</identifier-quote-string>\r\n      </database-info>\r\n      <case-sensitivity plain-identifiers=\"mixed\" quoted-identifiers=\"mixed\" />\r\n      <secret-storage>master_key</secret-storage>\r\n      <user-name>sa</user-name>\r\n      <schema-mapping>\r\n        <introspection-scope>\r\n          <node negative=\"1\">\r\n            <node kind=\"database\" qname=\"@\" />\r\n            <node kind=\"database\" qname=\"SWP1\">\r\n              <node kind=\"schema\" qname=\"@\" />\r\n            </node>\r\n          </node>\r\n        </introspection-scope>\r\n      </schema-mapping>\r\n    </data-source>\r\n    <data-source name=\"SWP1@localhost\" uuid=\"148ea87a-4b15-476e-afee-a31e748ece43\">\r\n      <database-info product=\"Microsoft SQL Server\" version=\"15.00.4365\" jdbc-version=\"4.2\" driver-name=\"Microsoft JDBC Driver 12.2 for SQL Server\" driver-version=\"12.2.0.0\" dbms=\"MSSQL\" exact-version=\"15.0.4365\" exact-driver-version=\"12.2\">\r\n        <extra-name-characters>$#@</extra-name-characters>\r\n        <identifier-quote-string>&quot;</identifier-quote-string>\r\n      </database-info>\r\n      <case-sensitivity plain-identifiers=\"mixed\" quoted-identifiers=\"mixed\" />\r\n      <secret-storage>master_key</secret-storage>\r\n      <user-name>sa</user-name>\r\n      <schema-mapping>\r\n        <introspection-scope>\r\n          <node kind=\"database\" qname=\"@\">\r\n            <node kind=\"schema\" qname=\"@\" />\r\n          </node>\r\n        </introspection-scope>\r\n      </schema-mapping>\r\n    </data-source>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dataSources.local.xml b/.idea/dataSources.local.xml
+--- a/.idea/dataSources.local.xml	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ b/.idea/dataSources.local.xml	(date 1720360900452)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="dataSourceStorageLocal" created-in="IU-241.18034.62">
++  <component name="dataSourceStorageLocal" created-in="IU-241.17011.79">
+     <data-source name="@localhost" uuid="3dff26b9-4846-4c8c-8a40-d0ba9fcb87ef">
+       <database-info product="Microsoft SQL Server" version="16.00.4125" jdbc-version="4.2" driver-name="Microsoft JDBC Driver 12.2 for SQL Server" driver-version="12.2.0.0" dbms="MSSQL" exact-version="16.0.4125" exact-driver-version="12.2">
+         <extra-name-characters>$#@</extra-name-characters>
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"3233376d-9177-47fd-a1df-bf34721dd4a2\" name=\"Changes\" comment=\"\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"com.intellij.jpb.JpaEntity\" />\r\n        <option value=\"Interface\" />\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"NSJPOSG1-5-Back-end-Register\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;AkiraKhoa&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/LHK190904/NET1814-SWP391-Jewelry-Production-Order-System-Group-1.git&quot;,\r\n    &quot;accountId&quot;: &quot;4f0c7e2e-9a18-4b03-8ed4-e27188db2fc2&quot;\r\n  }\r\n}</component>\r\n  <component name=\"JpbToolWindowState\">\r\n    <option name=\"isToolWindowVisible\" value=\"false\" />\r\n  </component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"MavenImportPreferences\">\r\n    <option name=\"generalSettings\">\r\n      <MavenGeneralSettings>\r\n        <option name=\"mavenHomeTypeForPersistence\" value=\"WRAPPER\" />\r\n      </MavenGeneralSettings>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 1\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2iai2B0yYghUHueVb6sjM0AeCyI\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Maven.SWP [clean].executor\": \"Run\",\r\n    \"RequestMappingsPanelOrder0\": \"0\",\r\n    \"RequestMappingsPanelOrder1\": \"1\",\r\n    \"RequestMappingsPanelWidth0\": \"75\",\r\n    \"RequestMappingsPanelWidth1\": \"75\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"Spring Boot.SwpApplication.executor\": \"Run\",\r\n    \"git-widget-placeholder\": \"NSJPOSG1-5-Back-end-Register\",\r\n    \"ignore.virus.scanning.warn.message\": \"true\",\r\n    \"kotlin-language-version-configured\": \"true\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"swagger\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  },\r\n  \"keyToStringList\": {\r\n    \"DatabaseDriversLRU\": [\r\n      \"sqlserver\"\r\n    ]\r\n  }\r\n}]]></component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"SwpApplication\" type=\"SpringBootApplicationConfigurationType\" factoryName=\"Spring Boot\" nameIsGenerated=\"true\">\r\n      <module name=\"SWP\" />\r\n      <option name=\"SPRING_BOOT_MAIN_CLASS\" value=\"com.backendVn.SWP.SwpApplication\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17890.1\" />\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17890.1\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"3233376d-9177-47fd-a1df-bf34721dd4a2\" name=\"Changes\" comment=\"\" />\r\n      <created>1719734878882</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1719734878882</updated>\r\n      <workItem from=\"1719734880134\" duration=\"8293000\" />\r\n      <workItem from=\"1719756016677\" duration=\"1584000\" />\r\n      <workItem from=\"1719801252569\" duration=\"6491000\" />\r\n      <workItem from=\"1719902693848\" duration=\"4612000\" />\r\n      <workItem from=\"1719923809672\" duration=\"8339000\" />\r\n      <workItem from=\"1719987774233\" duration=\"6077000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"XSLT-Support.FileAssociations.UIState\">\r\n    <expand />\r\n    <select />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 9464a39bd0d9ce805cb3b63082f6106480d5acf2)
++++ b/.idea/workspace.xml	(date 1720360900453)
+@@ -4,7 +4,150 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="3233376d-9177-47fd-a1df-bf34721dd4a2" name="Changes" comment="" />
++    <list default="true" id="3233376d-9177-47fd-a1df-bf34721dd4a2" name="Changes" comment="">
++      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_7_7_2024_8_35_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_7_7_2024_8_35_PM__Changes_.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/src/main/java/com/backendVn/SWP/services/RequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SWP/src/main/java/com/backendVn/SWP/services/RequestService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/application.yaml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/configs/ApplicationInitConfig.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/configs/SecurityConfig.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/AdminController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/AuthenticationController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/CustomerController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/DesignController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/GoldPriceController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/InvoiceController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/InvoiceDetailController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/MaterialController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/ProcessController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/QuotationController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/controllers/RequestController.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/AuthenticationRequest$AuthenticationRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/AuthenticationRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/CompanyDesignModifyRequest$CompanyDesignModifyRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/CompanyDesignModifyRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/CustomerRegisterRequest$CustomerRegisterRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/CustomerRegisterRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/DesignCreationRequest$DesignCreationRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/DesignCreationRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/DesignFeedBackRequest$DesignFeedBackRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/DesignFeedBackRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/DesignUpdateRequest$DesignUpdateRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/DesignUpdateRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/ExchangeTokenRequest$ExchangeTokenRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/ExchangeTokenRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/IntrospectRequest$IntrospectRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/IntrospectRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/InvoiceDetailUpdateRequest$InvoiceDetailUpdateRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/InvoiceDetailUpdateRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/InvoiceUpdateRequest$InvoiceUpdateRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/InvoiceUpdateRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/MaterialRequest$MaterialRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/MaterialRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/PasswordCreationRequest$PasswordCreationRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/PasswordCreationRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/ProcessUpdateRequest$ProcessUpdateRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/ProcessUpdateRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/QuotationCreationRequest$QuotationCreationRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/QuotationCreationRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/UserCreationRequest$UserCreationRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/UserCreationRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/UserUpdateRequest$UserUpdateRequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/request/UserUpdateRequest.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/ApiResponse$ApiResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/ApiResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/AuthenticationResponse$AuthenticationResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/AuthenticationResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/AutoPricingResponse$AutoPricingResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/AutoPricingResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/DesignResponse$DesignResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/DesignResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/ExchangeTokenResponse$ExchangeTokenResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/ExchangeTokenResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/IntrospectResponse$IntrospectResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/IntrospectResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/InvoiceDetailResponse$InvoiceDetailResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/InvoiceDetailResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/InvoiceResponse$InvoiceResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/InvoiceResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/MaterialResponse$MaterialResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/MaterialResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/OutboundUserResponse$OutboundUserResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/OutboundUserResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/ProcessResponse$ProcessResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/ProcessResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/QuotationResponse$QuotationResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/QuotationResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/UserResponse$UserResponseBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/dtos/response/UserResponse.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Design$DesignBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Design.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Invoice$InvoiceBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Invoice.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/InvoiceDetail$InvoiceDetailBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/InvoiceDetail.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Material$MaterialBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Material.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Process$ProcessBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Process.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Quotation$QuotationBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Quotation.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Request$RequestBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/Request.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/RequestOrder$RequestOrderBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/RequestOrder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/User$UserBuilder.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/entities/User.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/DesignMapper.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/DesignMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/InvoiceDetailMapper.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/InvoiceDetailMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/InvoiceMapper.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/InvoiceMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/MaterialMapper.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/MaterialMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/ProcessMapper.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/ProcessMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/QuotationMapper.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/QuotationMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/RequestMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/RequestOrderMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/UserMapper.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/UserMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/mappers/WarrantyCardMapperImpl.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/DesignRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/InvoiceDetailRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/InvoiceRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/MaterialRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/ProcessRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/QuotationRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/RequestOrderRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/RequestRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/UserRepository.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/httpclient/OutboundIdentityClient.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/repositories/httpclient/OutboundUserClient.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/AuthenticationService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/CustomerService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/DesignService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/InvoiceDetailService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/InvoiceService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/MaterialService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/ProcessService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/QuotationService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/UserService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/classes/com/backendVn/SWP/services/XmlToJsonService.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/DesignMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceDetailMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/InvoiceMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/MaterialMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/ProcessMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/QuotationMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/RequestOrderMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/UserMapperImpl.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/SWP/target/generated-sources/annotations/com/backendVn/SWP/mappers/WarrantyCardMapperImpl.java" beforeDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -62,33 +205,33 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "Maven.SWP [clean].executor": "Run",
+-    "RequestMappingsPanelOrder0": "0",
+-    "RequestMappingsPanelOrder1": "1",
+-    "RequestMappingsPanelWidth0": "75",
+-    "RequestMappingsPanelWidth1": "75",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+-    "Spring Boot.SwpApplication.executor": "Run",
+-    "git-widget-placeholder": "NSJPOSG1-5-Back-end-Register",
+-    "ignore.virus.scanning.warn.message": "true",
+-    "kotlin-language-version-configured": "true",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "settings.editor.selected.configurable": "swagger",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;Maven.SWP [clean].executor&quot;: &quot;Run&quot;,
++    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
++    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
++    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
++    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
++    &quot;Spring Boot.SwpApplication.executor&quot;: &quot;Run&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;NSJPOSG1-5-Back-end-Register&quot;,
++    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
++    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;swagger&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   },
+-  "keyToStringList": {
+-    "DatabaseDriversLRU": [
+-      "sqlserver"
++  &quot;keyToStringList&quot;: {
++    &quot;DatabaseDriversLRU&quot;: [
++      &quot;sqlserver&quot;
+     ]
+   }
+-}]]></component>
++}</component>
+   <component name="RunManager">
+     <configuration name="SwpApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+       <module name="SWP" />
+@@ -101,8 +244,8 @@
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17890.1" />
+-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17890.1" />
++        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17011.79" />
++        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17011.79" />
+       </set>
+     </attachedChunks>
+   </component>
+@@ -120,6 +263,8 @@
+       <workItem from="1719902693848" duration="4612000" />
+       <workItem from="1719923809672" duration="8339000" />
+       <workItem from="1719987774233" duration="6077000" />
++      <workItem from="1720360420920" duration="130000" />
++      <workItem from="1720360563080" duration="89000" />
+     </task>
+     <servers />
+   </component>

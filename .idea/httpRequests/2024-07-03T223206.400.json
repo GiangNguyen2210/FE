@@ -1,0 +1,4 @@
+{
+  "code": 1001,
+  "message": "Validation failed for argument [1] in public com.backendVn.SWP.dtos.response.ApiResponse<com.backendVn.SWP.dtos.response.RequestResponse> com.backendVn.SWP.controllers.RequestController.createRequest(java.lang.Integer,com.backendVn.SWP.dtos.request.RequestCreationRequestForCustomerDesign): [Field error in object 'requestCreationRequestForCustomerDesign' on field 'description': rejected value []; codes [NotEmpty.requestCreationRequestForCustomerDesign.description,NotEmpty.description,NotEmpty.java.lang.String,NotEmpty]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [requestCreationRequestForCustomerDesign.description,description]; arguments []; default message [description]]; default message [MESSAGE_IS_EMPTY]] "
+}

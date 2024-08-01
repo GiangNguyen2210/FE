@@ -1,0 +1,245 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 1,
+      "description": "123",
+      "customerID": 6,
+      "saleStaffID": null,
+      "status": "Disable",
+      "createdAt": "2024-07-18T07:09:38.900Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 2,
+      "description": "long",
+      "customerID": 6,
+      "saleStaffID": null,
+      "status": "Disable",
+      "createdAt": "2024-07-18T07:13:02.940Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3,
+      "description": "long",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "Processing",
+      "createdAt": "2024-07-18T07:14:11.123Z",
+      "recievedAt": "2024-07-22T14:26:55.373Z",
+      "endAt": null
+    },
+    {
+      "id": 4,
+      "description": "abc",
+      "customerID": 6,
+      "saleStaffID": null,
+      "status": "Disable",
+      "createdAt": "2024-07-18T07:15:25.713Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 5,
+      "description": "abc",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "Processing",
+      "createdAt": "2024-07-18T07:16:04.627Z",
+      "recievedAt": "2024-07-23T04:16:23.663Z",
+      "endAt": null
+    },
+    {
+      "id": 6,
+      "description": "good",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "Processing",
+      "createdAt": "2024-07-18T07:18:31.453Z",
+      "recievedAt": "2024-07-22T18:29:54.573Z",
+      "endAt": null
+    },
+    {
+      "id": 7,
+      "description": "124",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "Ordering",
+      "createdAt": "2024-07-18T07:19:25.440Z",
+      "recievedAt": "2024-07-18T07:26:35.767Z",
+      "endAt": null
+    },
+    {
+      "id": 8,
+      "description": "duoc roi",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-18T07:23:22.270Z",
+      "recievedAt": "2024-07-18T07:26:36.643Z",
+      "endAt": "2024-07-22T16:47:18.530Z"
+    },
+    {
+      "id": 9,
+      "description": "ok",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "Pending quotation for manager",
+      "createdAt": "2024-07-18T08:15:09.670Z",
+      "recievedAt": "2024-07-22T17:15:43.873Z",
+      "endAt": null
+    },
+    {
+      "id": 10,
+      "description": "bông tai",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-19T14:52:38.070Z",
+      "recievedAt": "2024-07-19T14:52:54.240Z",
+      "endAt": "2024-07-22T16:50:12.070Z"
+    },
+    {
+      "id": 11,
+      "description": "bông tai 2",
+      "customerID": 5,
+      "saleStaffID": 2,
+      "status": "Pending quotation for customer",
+      "createdAt": "2024-07-19T14:55:11.227Z",
+      "recievedAt": "2024-07-19T14:55:28.567Z",
+      "endAt": null
+    },
+    {
+      "id": 12,
+      "description": "duoc roi",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-22T10:03:28.230Z",
+      "recievedAt": "2024-07-22T14:21:20.483Z",
+      "endAt": "2024-07-22T16:54:17.767Z"
+    },
+    {
+      "id": 13,
+      "description": "loi ko",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-22T14:02:11.413Z",
+      "recievedAt": "2024-07-22T14:02:30.177Z",
+      "endAt": "2024-07-22T18:08:06.257Z"
+    },
+    {
+      "id": 14,
+      "description": "duoc roi",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-22T17:14:56.747Z",
+      "recievedAt": "2024-07-22T17:15:43.207Z",
+      "endAt": "2024-07-22T17:23:38.657Z"
+    },
+    {
+      "id": 15,
+      "description": "thaaaa",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-22T17:50:33.413Z",
+      "recievedAt": "2024-07-22T17:51:31.943Z",
+      "endAt": "2024-07-22T18:05:50.887Z"
+    },
+    {
+      "id": 16,
+      "description": "tha 2",
+      "customerID": 6,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-22T17:50:58.997Z",
+      "recievedAt": "2024-07-22T17:51:32.643Z",
+      "endAt": "2024-07-22T17:57:30.133Z"
+    },
+    {
+      "id": 17,
+      "description": "duoc roi",
+      "customerID": 7,
+      "saleStaffID": 2,
+      "status": "Ordering",
+      "createdAt": "2024-07-22T18:40:26.920Z",
+      "recievedAt": "2024-07-22T18:41:17.800Z",
+      "endAt": null
+    },
+    {
+      "id": 18,
+      "description": "good",
+      "customerID": 7,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-22T18:40:48.440Z",
+      "recievedAt": "2024-07-22T18:41:18.443Z",
+      "endAt": "2024-07-22T19:18:24.003Z"
+    },
+    {
+      "id": 19,
+      "description": null,
+      "customerID": 7,
+      "saleStaffID": 2,
+      "status": "Unapproved",
+      "createdAt": "2024-07-22T18:40:55.257Z",
+      "recievedAt": "2024-07-22T18:41:19.020Z",
+      "endAt": null
+    },
+    {
+      "id": 20,
+      "description": "good",
+      "customerID": 7,
+      "saleStaffID": 2,
+      "status": "Pending quotation for customer",
+      "createdAt": "2024-07-22T18:57:14.107Z",
+      "recievedAt": "2024-07-22T18:57:46.690Z",
+      "endAt": null
+    },
+    {
+      "id": 21,
+      "description": "dây chuyền lục bảo tròn",
+      "customerID": 8,
+      "saleStaffID": 2,
+      "status": "finished",
+      "createdAt": "2024-07-23T03:43:14.553Z",
+      "recievedAt": "2024-07-23T03:43:38.547Z",
+      "endAt": "2024-07-23T04:29:40.963Z"
+    },
+    {
+      "id": 22,
+      "description": "vòng tay ngọc đá ",
+      "customerID": 8,
+      "saleStaffID": 2,
+      "status": "Pending quotation for manager",
+      "createdAt": "2024-07-23T04:16:00.713Z",
+      "recievedAt": "2024-07-23T04:16:22.800Z",
+      "endAt": null
+    },
+    {
+      "id": 23,
+      "description": "vòng tay ngọc đá hoa test",
+      "customerID": 8,
+      "saleStaffID": 2,
+      "status": "Pending quotation for manager",
+      "createdAt": "2024-07-23T04:18:38.197Z",
+      "recievedAt": "2024-07-23T04:18:52.907Z",
+      "endAt": null
+    },
+    {
+      "id": 24,
+      "description": "duoc roi",
+      "customerID": 6,
+      "saleStaffID": null,
+      "status": "Unapproved",
+      "createdAt": "2024-07-25T14:34:38.403Z",
+      "recievedAt": null,
+      "endAt": null
+    }
+  ]
+}

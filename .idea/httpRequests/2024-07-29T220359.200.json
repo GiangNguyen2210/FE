@@ -1,0 +1,47 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 4,
+      "designName": "DOJI1-Necklace",
+      "order_count": 1,
+      "price": 24007300.00
+    },
+    {
+      "id": 6,
+      "designName": "DOJI2-Bracelet",
+      "order_count": 1,
+      "price": 26650000.00
+    },
+    {
+      "id": 10,
+      "designName": "DOJI3-Bracelet",
+      "order_count": 1,
+      "price": 22200000.00
+    },
+    {
+      "id": 48,
+      "designName": "IDV-Golden Earrings",
+      "order_count": 1,
+      "price": 10000000.00
+    },
+    {
+      "id": 2,
+      "designName": "DOJI1-Bracelet",
+      "order_count": 1,
+      "price": 27000000.00
+    },
+    {
+      "id": 8,
+      "designName": "DOJI2-Necklace",
+      "order_count": 1,
+      "price": 28000000.00
+    },
+    {
+      "id": 15,
+      "designName": "PNJ1-BraceletM",
+      "order_count": 1,
+      "price": 30000000.00
+    }
+  ]
+}

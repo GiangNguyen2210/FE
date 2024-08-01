@@ -1,0 +1,23 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 1,
+      "type": "gold",
+      "pricePerUnit": 100.00,
+      "materialName": "24k"
+    },
+    {
+      "id": 2,
+      "type": "gold",
+      "pricePerUnit": 100.00,
+      "materialName": "9999"
+    },
+    {
+      "id": 3,
+      "type": "gold",
+      "pricePerUnit": 100.00,
+      "materialName": "8888"
+    }
+  ]
+}

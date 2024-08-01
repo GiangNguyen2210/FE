@@ -1,0 +1,13 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 6002,
+    "description": "dasdasd",
+    "customerID": 5002,
+    "saleStaffID": null,
+    "status": "Unapproved",
+    "createdAt": "2024-07-03T15:49:37.798455200Z",
+    "recievedAt": null,
+    "endAt": null
+  }
+}

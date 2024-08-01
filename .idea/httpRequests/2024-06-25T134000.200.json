@@ -1,0 +1,23 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": {
+        "materialID": 1,
+        "requestOrderid": 1
+      },
+      "materialID": 1,
+      "requestOrderID": 1,
+      "weight": 100.00
+    },
+    {
+      "id": {
+        "materialID": 2,
+        "requestOrderid": 1
+      },
+      "materialID": 2,
+      "requestOrderID": 1,
+      "weight": 100.00
+    }
+  ]
+}

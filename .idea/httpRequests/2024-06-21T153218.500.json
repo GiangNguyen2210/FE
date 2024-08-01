@@ -1,0 +1,6 @@
+{
+  "timestamp": "2024-06-21T08:32:18.654+00:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/quotation/1"
+}

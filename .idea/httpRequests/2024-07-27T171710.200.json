@@ -1,0 +1,12 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 1002,
+    "requestID": 10005,
+    "amount": 61728394.50,
+    "paymentDate": null,
+    "createdAt": null,
+    "paymentType": "Deposit",
+    "status": "Unpaid"
+  }
+}

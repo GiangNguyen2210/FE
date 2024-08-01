@@ -1,0 +1,157 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 1003,
+      "userName": "khoa12345123",
+      "password": "$2a$10$wfoKcFN5.//Sbz2uwala4enPsdC3wL//mpu6oUZGyx4Y.mAhgHdDq",
+      "email": "giang@đáas.com",
+      "address": "asdasdasdasdasd",
+      "title": "ADMIN"
+    },
+    {
+      "id": 2002,
+      "userName": "admin",
+      "password": "$2a$10$9aIjzPaedqm5lJa6wT4ao.maT1JdfM.OEW.Zk5NyK657769uft3Xu",
+      "email": null,
+      "address": null,
+      "title": "ADMIN"
+    },
+    {
+      "id": 3002,
+      "userName": "giang12345",
+      "password": "$2a$10$/C4qSMckdlgVyYeR6kuNMu0yY3F2RVOdy3Xn2HZlefF7wfPhuyeMO",
+      "email": "aasdasdasd",
+      "address": "asdasdasd",
+      "title": "SALE_STAFF"
+    },
+    {
+      "id": 4002,
+      "userName": "giang123456",
+      "password": "$2a$10$d8ClxtyvssFc5M9SkJwuIuWSmzw/CHeI7FDT6.1SJ86jyOnP.IRTW",
+      "email": "giang@asdasd.com",
+      "address": "dssd",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5002,
+      "userName": "giang1234567",
+      "password": "$2a$10$5TV0dzd9ToE6ALzDoFK.deIoa5NP5SOpFGSCeBGnvvb4RZv1mZSDC",
+      "email": "giang@asdas.com",
+      "address": "asdasd",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5003,
+      "userName": "giang12345678",
+      "password": "$2a$10$ewQN9FTgBesr/kbXwiqIDuOrBqaYIcT4nZmgouyMNd0dE3N1KBrjy",
+      "email": "giang@asd.com",
+      "address": "asd",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5004,
+      "userName": "giang123456789",
+      "password": "$2a$10$gOU7fAD7j/Tk2Pg96Dwr8.npAxU3tHZIAS8.cBtfFj3rQAurjWApG",
+      "email": "giang@asd.com",
+      "address": "asd",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5005,
+      "userName": "dmm",
+      "password": "$2a$10$wZhHv5.HslSVUZFbtbhSNOLFcJW2MWRB1B0RhcJ1Ulpqqhma/qyWO",
+      "email": "",
+      "address": "",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5006,
+      "userName": "mmb",
+      "password": "$2a$10$8bSM5xGO.wdbbssFhhsYvuM/N/HHrQ65skCnPDJ.IjCRlKStJCUVG",
+      "email": "",
+      "address": "",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5007,
+      "userName": "asdasd",
+      "password": "$2a$10$pNFR3EkXyD9/vYlqSaGTLutwsNiIycrEH/NUsyjvkM0AbJh5Lbqky",
+      "email": "",
+      "address": "",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5008,
+      "userName": "giang123456790",
+      "password": "$2a$10$CgGoiSoS/h70U600KGWq9eC.TH.sGUe9MTq2vMeN3VXlaJ6h4UAea",
+      "email": "",
+      "address": "",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5009,
+      "userName": "asdasdasd",
+      "password": "$2a$10$OdYiONCKVWdaXzGjv0yQqe7Rdp55Cu4PXDTokDHtdcP0ApoGEgV9K",
+      "email": "",
+      "address": "",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 5010,
+      "userName": "baohoang",
+      "password": "$2a$10$uJs1YCq3ZTwq7qwzzEQ/dufJNw1ohD5Pc/Le/SgSMX4796Orafooe",
+      "email": "bao@123.com",
+      "address": null,
+      "title": "SALE_STAFF"
+    },
+    {
+      "id": 7004,
+      "userName": "giang1234580",
+      "password": "$2a$10$exvT4bAe9kjzWo.nSgeofuew80rTTuwqLYwmcsptncpBHTjzsOvRy",
+      "email": "aasdasdasd@gmail.com",
+      "address": "asdasdasd",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 7008,
+      "userName": "iagasdasd",
+      "password": "$2a$10$mDqI4ks2WnL1lsPaf1.O0ezxsTv93pa8kR2/gM3bJEwSMBtoJG8S2",
+      "email": "giang@gmail.com",
+      "address": "giansdasd",
+      "title": "CUSTOMER"
+    },
+    {
+      "id": 7010,
+      "userName": "asdas123",
+      "password": "$2a$10$0mvGAz8C/wUfIQ6z0Mn7Uu6eneVLMcnAxbaaHfWyErEUJg.eBD5K.",
+      "email": "giang@gmail.com",
+      "address": "asdasd",
+      "title": "PRODUCTION_STAFF"
+    },
+    {
+      "id": 8007,
+      "userName": "asdsds1",
+      "password": "$2a$10$BiKHCZ1C13eJMdggPupLNusao33ro/UK35pD1asbmbA969C6LSIzK",
+      "email": "giang@c.com",
+      "address": "asdas das d",
+      "title": "SALE_STAFF"
+    },
+    {
+      "id": 8008,
+      "userName": "asdasd1234123",
+      "password": "$2a$10$dunxtE0fowCsz4tQOfeUNOUIc9MDAfKt3eHEDqIyKA3RHngsjL7a2",
+      "email": "giang@c.com",
+      "address": null,
+      "title": "PRODUCTION_STAFF"
+    },
+    {
+      "id": 8009,
+      "userName": "aewzsrxdctfuvygbhj",
+      "password": "$2a$10$ACcNVkKvU.1coAE4Ci7xM.2sVue7x.5mmA4Nuw1zCIFxczK7WXZBW",
+      "email": "hoangkhanh19092004@gmail.com",
+      "address": null,
+      "title": "PRODUCTION_STAFF"
+    }
+  ]
+}

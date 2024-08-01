@@ -1,0 +1,17 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 1003,
+    "designName": "4",
+    "description": "1003",
+    "listURLImage": [
+      "2",
+      "3"
+    ],
+    "category": "RING",
+    "mainStoneId": 1,
+    "subStoneId": 1,
+    "materialWeight": 2,
+    "materialName": "Gold"
+  }
+}

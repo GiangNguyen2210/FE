@@ -1,0 +1,25 @@
+{
+  "code": 1000,
+  "result": {
+    "id": null,
+    "description": "asdas",
+    "customerID": 11008,
+    "saleStaffID": null,
+    "status": "Unapproved",
+    "createdAt": "2024-07-26T06:04:13.943799200Z",
+    "recievedAt": null,
+    "endAt": null,
+    "materialName": "d",
+    "materialWeight": 100,
+    "mainStone": null,
+    "subStone": null,
+    "category": "RING",
+    "produceCost": 1500,
+    "companyDesign": null,
+    "listURLImage": [
+      "2",
+      "3"
+    ],
+    "deniedReason": null
+  }
+}

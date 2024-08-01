@@ -1,0 +1,11 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 2,
+    "userName": "giang",
+    "password": "$2a$10$61jLcWe3DErkdGsviUBZYeGpquh5bYZcrgoG.ilzMwjxYb02ApbNS",
+    "email": "adasdas",
+    "address": "asdasdas",
+    "title": "Admin"
+  }
+}

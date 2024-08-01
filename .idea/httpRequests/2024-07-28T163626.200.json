@@ -1,0 +1,642 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 2,
+      "designName": "DOJI1-Bracelet",
+      "description": "DOJI1-Bracelet",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F24%2Fbracelet.jpg?alt=media&token=dbb71ede-9c66-47ef-ac19-c05bc0b55a97"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 3,
+      "designName": "DOJI1-Earrings",
+      "description": "DOJI1-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F25%2Fearrings.jpg?alt=media&token=28d99c38-db65-49c7-a7f7-229dd4c20a7f"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 4,
+      "designName": "DOJI1-Necklace",
+      "description": "DOJI1-Necklace",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F26%2Fnecklace.jpg?alt=media&token=c69e5992-df84-4669-8c95-f0e6cb59cde1"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 5,
+      "designName": "DOJI1-Ring",
+      "description": "DOJI1-Ring",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F27%2Fring.jpg?alt=media&token=00b96aa2-7d9a-4efd-a82a-da5b4a37b4e3"
+      ],
+      "category": "RING",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 6,
+      "designName": "DOJI2-Bracelet",
+      "description": "DOJI2-Bracelet",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F28%2Fbracelet.jpg?alt=media&token=77d64932-d784-4e6e-891f-686c1e6cfdd5"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG SJC (Vàng SJC)"
+    },
+    {
+      "id": 7,
+      "designName": "DOJI2-Earrings",
+      "description": "DOJI2-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F29%2Fearrings.jpg?alt=media&token=12256239-1ce2-4b1f-bf98-afc48748536e"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG SJC (Vàng SJC)"
+    },
+    {
+      "id": 8,
+      "designName": "DOJI2-Necklace",
+      "description": "DOJI2-Necklace",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F30%2Fnecklace.jpg?alt=media&token=bf41bcec-2a52-44f9-aa1a-de1afe3e784d"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG SJC (Vàng SJC)"
+    },
+    {
+      "id": 9,
+      "designName": "DOJI2-Ring",
+      "description": "DOJI2-Ring",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F31%2Fring.jpg?alt=media&token=8e51534e-7c76-4b3a-b959-1edc09a63809"
+      ],
+      "category": "RING",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG SJC (Vàng SJC)"
+    },
+    {
+      "id": 10,
+      "designName": "DOJI3-Bracelet",
+      "description": "DOJI3-Bracelet",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F32%2Fbracelet.jpg?alt=media&token=e9a99231-a798-4634-8103-0b7bc7187c9c"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 19,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 11,
+      "designName": "DOJI3-Earrings",
+      "description": "DOJI3-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F33%2Fearrings.jpg?alt=media&token=040b4a3f-3960-46b7-9535-88465df9bbe8"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 18,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 12,
+      "designName": "DOJI3-Necklace",
+      "description": "DOJI3-Necklace",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fnecklace.jpg?alt=media&token=a30c6036-3163-4332-8639-d7efab25bbc3"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 18,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 13,
+      "designName": "DOJI3-Ring",
+      "description": "DOJI3-Ring",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fring.jpg?alt=media&token=4ab6903f-7b80-4719-affb-a34c1f2d2cae"
+      ],
+      "category": "RING",
+      "mainStoneId": 18,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 14,
+      "designName": "PNJ1-BraceletF",
+      "description": "PNJ1-BraceletF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F36%2FbraceletF.png?alt=media&token=9e211f86-61d6-443a-8891-0b421bf8eb31"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 20,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 15,
+      "designName": "PNJ1-BraceletM",
+      "description": "PNJ1-BraceletM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F37%2FbraceletM.png?alt=media&token=58432af3-7315-482c-93a0-9b160b90ec44"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 20,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 16,
+      "designName": "PNJ1-Earrings",
+      "description": "PNJ1-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F38%2Fearrings.png?alt=media&token=d852ae99-ccae-4c52-9669-60c27fe15a58"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 20,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 17,
+      "designName": "PNJ1-NecklaceF",
+      "description": "PNJ1-NecklaceF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F39%2FnecklaceF.png?alt=media&token=77a15f6d-79d0-4cd4-af59-a9260979614b"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 20,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 18,
+      "designName": "PNJ1-NecklaceM",
+      "description": "PNJ1-NecklaceM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F40%2FnecklaceM.png?alt=media&token=016326b8-3cf3-44b8-a712-fc55b7c50161"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 20,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 19,
+      "designName": "PNJ1-RingF",
+      "description": "PNJ1-RingF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F41%2FringF.png?alt=media&token=a074c4f8-32ab-4b56-8034-7e5f4dc1d4ae"
+      ],
+      "category": "RING",
+      "mainStoneId": 20,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 20,
+      "designName": "PNJ1-RingM",
+      "description": "PNJ1-RingM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F42%2FringM.png?alt=media&token=1ccbdfb5-0914-41df-a22e-e3a9b08d5381"
+      ],
+      "category": "RING",
+      "mainStoneId": 20,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 21,
+      "designName": "PNJ2-BraceletF",
+      "description": "PNJ2-BraceletF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F43%2FbraceletF.png?alt=media&token=1d2d2673-c426-4181-9521-3ea688818881"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "QUÀ MỪNG BẢN VỊ VÀNG (Quà Mừng Bản Vị Vàng)"
+    },
+    {
+      "id": 22,
+      "designName": "PNJ2-Earrings",
+      "description": "PNJ2-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F44%2Fearrings.png?alt=media&token=61cc5486-f8d8-4d15-9353-fa1f0d1eebf4"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "QUÀ MỪNG BẢN VỊ VÀNG (Quà Mừng Bản Vị Vàng)"
+    },
+    {
+      "id": 23,
+      "designName": "PNJ2-NecklaceF",
+      "description": "PNJ2-NecklaceF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F45%2FnecklaceF.png?alt=media&token=0640e4ed-a7ee-40f6-86fe-448e1accdd18"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "QUÀ MỪNG BẢN VỊ VÀNG (Quà Mừng Bản Vị Vàng)"
+    },
+    {
+      "id": 24,
+      "designName": "PNJ2-RingF",
+      "description": "PNJ2-RingF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F46%2FringF.png?alt=media&token=0101cc02-17f4-4af6-825c-4349fa9720c7"
+      ],
+      "category": "RING",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "QUÀ MỪNG BẢN VỊ VÀNG (Quà Mừng Bản Vị Vàng)"
+    },
+    {
+      "id": 25,
+      "designName": "PNJ2-RingM",
+      "description": "PNJ2-RingM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F47%2FringM.png?alt=media&token=b4c02c10-4252-45ff-9380-17ee42fc65ee"
+      ],
+      "category": "RING",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "QUÀ MỪNG BẢN VỊ VÀNG (Quà Mừng Bản Vị Vàng)"
+    },
+    {
+      "id": 26,
+      "designName": "PNJ3-BraceletF",
+      "description": "PNJ3-BraceletF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F48%2FbraceletF.png?alt=media&token=c18b0966-f40e-4208-8d78-997e6f9d663b"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 27,
+      "designName": "PNJ3-BraceletM",
+      "description": "PNJ3-BraceletM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F49%2FbraceletM.png?alt=media&token=f8ce6298-2ea3-46c0-8d60-f0804dbba35f"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 28,
+      "designName": "PNJ3-Earrings",
+      "description": "PNJ3-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F50%2Fearrings.png?alt=media&token=ceff58ef-6e4f-4d37-a6e6-3f06cb7183d9"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 29,
+      "designName": "PNJ3-NecklaceF",
+      "description": "PNJ3-NecklaceF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F51%2FnecklaceF.png?alt=media&token=cb8f21db-11d1-48dc-bcc2-e17ef9221ad5"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 30,
+      "designName": "PNJ3-RingF",
+      "description": "PNJ3-RingF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F52%2FringF.png?alt=media&token=b8978f3b-c0bf-4755-a1c6-4e211180d34b"
+      ],
+      "category": "RING",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 31,
+      "designName": "PNJ3-RingM",
+      "description": "PNJ3-RingM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F53%2FringM.png?alt=media&token=fd7a0f30-7b3e-4f9b-9160-6f3ca2c162fa"
+      ],
+      "category": "RING",
+      "mainStoneId": 16,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 32,
+      "designName": "PNJ4-Bracelet",
+      "description": "PNJ4-Bracelet",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F54%2Fbracelet.png?alt=media&token=9a9803d2-4a0c-4bcb-ba98-1301a503a2cd"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 99.9 (Vàng BTMC)"
+    },
+    {
+      "id": 33,
+      "designName": "PNJ4-Earrings",
+      "description": "PNJ4-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F55%2Fearrings.png?alt=media&token=ebc08599-a2b2-4971-9fd1-9a247be7da8e"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 99.9 (Vàng BTMC)"
+    },
+    {
+      "id": 34,
+      "designName": "PNJ4-Necklace",
+      "description": "PNJ4-Necklace",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F56%2Fnecklace.png?alt=media&token=8ee257e0-16da-470d-92fb-ce440ebb3c82"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 99.9 (Vàng BTMC)"
+    },
+    {
+      "id": 35,
+      "designName": "PNJ4-RingF",
+      "description": "PNJ4-RingF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F57%2FringF.png?alt=media&token=e917304e-317e-4a17-9f0b-1f7a7c269f5d"
+      ],
+      "category": "RING",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 99.9 (Vàng BTMC)"
+    },
+    {
+      "id": 36,
+      "designName": "PNJ4-RingM",
+      "description": "PNJ4-RingM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F58%2FringM.png?alt=media&token=3df8d8ee-25f0-4ec2-86ad-4c7258c181a6"
+      ],
+      "category": "RING",
+      "mainStoneId": 17,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 99.9 (Vàng BTMC)"
+    },
+    {
+      "id": 37,
+      "designName": "PNJ5-BraceletF",
+      "description": "PNJ5-BraceletF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F59%2FbraceletF.png?alt=media&token=ed90f09b-d048-404f-92d7-ae296a387dd9"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 38,
+      "designName": "PNJ5-BraceletM",
+      "description": "PNJ5-BraceletM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F60%2FbraceletM.png?alt=media&token=c7e152f5-2420-45f3-9e1e-1d478b2721fa"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 39,
+      "designName": "PNJ5-Earrings",
+      "description": "PNJ5-Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F61%2Fearrings.png?alt=media&token=2fb8e1b0-911f-4612-8c45-73f8af9d12ea"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 40,
+      "designName": "PNJ5-Necklace",
+      "description": "PNJ5-Necklace",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F62%2Fnecklace.png?alt=media&token=b658d2c6-3f2a-48ae-8946-3b22289244d2"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 41,
+      "designName": "PNJ5-RingF",
+      "description": "PNJ5-RingF",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F63%2FringF.png?alt=media&token=ecc6c2fd-89a7-4d64-8992-e9a545e964a2"
+      ],
+      "category": "RING",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 42,
+      "designName": "PNJ5-RingM",
+      "description": "PNJ5-RingM",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2F64%2FringM.png?alt=media&token=3e3e01ec-e42c-4466-a220-c3fd79a7f5c0"
+      ],
+      "category": "RING",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 43,
+      "designName": "IDV-Diamond Bracelet",
+      "description": "IDV-Diamond Bracelet",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fdiamond_bracelet1.jpg?alt=media&token=4657a299-d10f-4095-8ac9-e390b54460df"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": null,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 999.9 (Vàng BTMC)"
+    },
+    {
+      "id": 44,
+      "designName": "IDV-Diamond Earrings",
+      "description": "IDV-Diamond Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fdiamond_earrings1.jpg?alt=media&token=345e6972-80d9-4be9-85b3-d7d4a90674d2"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 45,
+      "designName": "IDV-Diamond Necklace",
+      "description": "IDV-Diamond Necklace",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fdiamond_necklace1.jpg?alt=media&token=6965875c-3b38-464d-9ad1-3e3f0f5fb264"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG VRTL (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 46,
+      "designName": "IDV-Diamond Ring",
+      "description": "IDV-Diamond Ring",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fdiamond_ring1.jpg?alt=media&token=117625e9-4f26-460a-a254-7fd024ebbac5"
+      ],
+      "category": "RING",
+      "mainStoneId": 15,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG MIẾNG SJC (Vàng SJC)"
+    },
+    {
+      "id": 47,
+      "designName": "IDV-Golden Bracelet",
+      "description": "IDV-Golden Bracelet",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fgold_bracelet1.jpg?alt=media&token=fc5e2c64-213c-4460-8e8f-d21cbdbee183"
+      ],
+      "category": "BRACELET",
+      "mainStoneId": null,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "VÀNG NGUYÊN LIỆU (Vàng thị trường)"
+    },
+    {
+      "id": 48,
+      "designName": "IDV-Golden Earrings",
+      "description": "IDV-Golden Earrings",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fgold_earrings1.jpg?alt=media&token=f3ea1fcb-0637-41b9-b341-5ea68f4bca5c"
+      ],
+      "category": "EARRINGS",
+      "mainStoneId": null,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "NHẪN TRÒN TRƠN (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 49,
+      "designName": "IDV-Golden Necklace",
+      "description": "IDV-Golden Necklace",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fgold_necklace1.jpg?alt=media&token=bff6d5a4-7b23-4d20-8397-17f475e39827"
+      ],
+      "category": "NECKLACE",
+      "mainStoneId": null,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "NHẪN TRÒN TRƠN (Vàng Rồng Thăng Long)"
+    },
+    {
+      "id": 50,
+      "designName": "IDV-Golden Ring",
+      "description": "IDV-Golden Ring",
+      "listURLImage": [
+        "https://firebasestorage.googleapis.com/v0/b/jewelry-production-a025c.appspot.com/o/designs%2Fundefined%2Fgold_ring1.jpg?alt=media&token=dd782230-fb54-4ada-ad00-0fe38629e07f"
+      ],
+      "category": "RING",
+      "mainStoneId": null,
+      "subStoneId": null,
+      "materialWeight": 1.00,
+      "materialName": "TRANG SỨC BẰNG VÀNG RỒNG THĂNG LONG 99.9 (Vàng BTMC)"
+    }
+  ]
+}

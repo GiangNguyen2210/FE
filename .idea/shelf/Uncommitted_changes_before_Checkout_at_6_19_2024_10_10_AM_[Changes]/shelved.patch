@@ -1,0 +1,17 @@
+Index: SWP/src/main/java/com/backendVn/SWP/services/PaymentService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.backendVn.SWP.services;\r\n\r\nimport com.backendVn.SWP.dtos.response.PaymentResponse;\r\nimport com.backendVn.SWP.entities.Invoice;\r\nimport com.backendVn.SWP.entities.Payment;\r\nimport com.backendVn.SWP.entities.Request;\r\nimport com.backendVn.SWP.exception.AppException;\r\nimport com.backendVn.SWP.exception.ErrorCode;\r\nimport com.backendVn.SWP.mappers.PaymentMapper;\r\nimport com.backendVn.SWP.repositories.InvoiceRepository;\r\nimport com.backendVn.SWP.repositories.PaymentRepository;\r\nimport com.backendVn.SWP.repositories.RequestRepository;\r\nimport lombok.AccessLevel;\r\nimport lombok.RequiredArgsConstructor;\r\nimport lombok.experimental.FieldDefaults;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.time.Instant;\r\nimport java.util.List;\r\n\r\n@Service\r\n@RequiredArgsConstructor\r\n@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)\r\npublic class PaymentService {\r\n    PaymentRepository paymentRepository;\r\n    PaymentMapper paymentMapper;\r\n    RequestRepository requestRepository;\r\n    InvoiceRepository invoiceRepository;\r\n\r\n    public PaymentResponse createPayment(Integer requestID) {\r\n        Request request = requestRepository.findById(requestID).orElseThrow(()-> new AppException(ErrorCode.REQUEST_NOT_FOUND));\r\n\r\n        Payment payment = new Payment();\r\n        payment.setPaymentDate(Instant.now());\r\n        payment.setPaymentType(\"\");\r\n        payment.setStatus(\"unpaid\");\r\n        payment.setRequestID(request);\r\n        Invoice invoice = invoiceRepository.findByRequestID(request);\r\n        payment.setAmount(invoice.getTotalCost());\r\n        Payment savedPayment = paymentRepository.save(payment);\r\n        return paymentMapper.toPaymentResponse(savedPayment);\r\n    }\r\n\r\n    public PaymentResponse updatePayment( Integer id) {\r\n        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_NOT_FOUND));\r\n        payment.setStatus(\"paid\");\r\n        return paymentMapper.toPaymentResponse(paymentRepository.save(payment));\r\n    }\r\n\r\n    public List<PaymentResponse> getPayment() {\r\n        return paymentRepository.findAll().stream().map(paymentMapper::toPaymentResponse).toList();\r\n    }\r\n\r\n    public void deletePayment(Integer id) {\r\n        paymentRepository.deleteById(id);\r\n    }\r\n}\r\n
+===================================================================
+diff --git a/SWP/src/main/java/com/backendVn/SWP/services/PaymentService.java b/SWP/src/main/java/com/backendVn/SWP/services/PaymentService.java
+--- a/SWP/src/main/java/com/backendVn/SWP/services/PaymentService.java	
++++ b/SWP/src/main/java/com/backendVn/SWP/services/PaymentService.java	
+@@ -41,7 +41,7 @@
+         return paymentMapper.toPaymentResponse(savedPayment);
+     }
+ 
+-    public PaymentResponse updatePayment( Integer id) {
++    public PaymentResponse updatePayment(Integer id) {
+         Payment payment = paymentRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_NOT_FOUND));
+         payment.setStatus("paid");
+         return paymentMapper.toPaymentResponse(paymentRepository.save(payment));

@@ -1,0 +1,17 @@
+{
+  "code": 1000,
+  "result": {
+    "id": 1003,
+    "designName": "asd",
+    "description": "asdasd",
+    "listURLImage": [
+      "2",
+      "3"
+    ],
+    "category": null,
+    "mainStone": null,
+    "subStone": null,
+    "materialWeight": null,
+    "materialName": null
+  }
+}

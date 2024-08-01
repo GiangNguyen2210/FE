@@ -1,0 +1,10 @@
+[
+  {
+    "code": 1001,
+    "message": "THE_LIST_IS_EMPTY"
+  },
+  {
+    "code": 1001,
+    "message": "MESSAGE_IS_EMPTY"
+  }
+]

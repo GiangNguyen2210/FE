@@ -1,0 +1,17 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "month": 1,
+      "totalRevenue": 3370.90
+    },
+    {
+      "month": 5,
+      "totalRevenue": 2298.03
+    },
+    {
+      "month": 6,
+      "totalRevenue": 2764.14
+    }
+  ]
+}

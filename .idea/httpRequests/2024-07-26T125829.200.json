@@ -1,0 +1,25 @@
+{
+  "code": 1000,
+  "result": {
+    "id": null,
+    "description": "asdasd",
+    "customerID": 11008,
+    "saleStaffID": null,
+    "status": "Unapproved",
+    "createdAt": "2024-07-26T05:58:28.995623300Z",
+    "recievedAt": null,
+    "endAt": null,
+    "materialName": "h",
+    "materialWeight": 100,
+    "mainStone": null,
+    "subStone": null,
+    "category": "RING",
+    "produceCost": 1500,
+    "companyDesign": null,
+    "listURLImage": [
+      "2",
+      "3"
+    ],
+    "deniedReason": null
+  }
+}

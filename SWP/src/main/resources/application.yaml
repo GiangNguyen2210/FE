@@ -1,0 +1,39 @@
+#  Thomas1910@
+#  jdbc:sqlserver://mssql.recs.site;database=SWP391_NET1814_Jewelry_Production_Order_System;encrypt=false
+#SWP391_NET1814_Jewelry_Production_Order_System
+spring:
+  datasource:
+    url: jdbc:sqlserver://mssql.recs.site;database=SWP391_NET1814_Jewelry_Production_Order_System;encrypt=false
+    username: sa
+    password: Thomas1910@
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: giangNTSE183662@fpt.edu.vn
+    password: "dalr qpiv pyxr elyu"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+
+outbound:
+  identity:
+    client-id: "878798429133-i8k172q7439p32s13rqnl1np9g4g8l18.apps.googleusercontent.com"
+    client-secret: "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"
+#    redirect-uri: "http://localhost:5173/authenticate"
+    redirect-uri: "https://swp-391-jewelry-production.vercel.app/authenticate"
+
+jwt:
+  signerKey: "ha+MtmyenlAuB5AZutl1uNHRhrkmDGfFI7xpExHY50pZP+50iuif23teGaUwNa1I"
+

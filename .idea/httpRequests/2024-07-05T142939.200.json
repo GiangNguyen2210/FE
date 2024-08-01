@@ -1,0 +1,185 @@
+{
+  "code": 1000,
+  "result": [
+    {
+      "id": 1,
+      "description": "good test",
+      "customerID": 1003,
+      "saleStaffID": 3002,
+      "status": "Pending quotation",
+      "createdAt": "2024-06-11T08:46:41.340Z",
+      "recievedAt": "2024-06-14T05:19:32.817Z",
+      "endAt": null
+    },
+    {
+      "id": 2,
+      "description": "basdasd asd asdasda sd",
+      "customerID": 3002,
+      "saleStaffID": null,
+      "status": "Pending quotation",
+      "createdAt": "2024-06-17T03:59:22.293Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 1002,
+      "description": "asdasdasdas",
+      "customerID": 1003,
+      "saleStaffID": null,
+      "status": "Pending quotation",
+      "createdAt": "2024-06-18T18:04:00.370Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 2002,
+      "description": "neo",
+      "customerID": 1003,
+      "saleStaffID": null,
+      "status": "Unapproved",
+      "createdAt": "2024-06-21T09:36:57.030Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3002,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3003,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3004,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3005,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3007,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3008,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3009,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3010,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3011,
+      "description": "asdasdasd",
+      "customerID": null,
+      "saleStaffID": null,
+      "status": null,
+      "createdAt": null,
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3012,
+      "description": "asdasdasd",
+      "customerID": 1003,
+      "saleStaffID": null,
+      "status": "Unapproved",
+      "createdAt": "2024-06-29T10:06:22.160Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 3013,
+      "description": "asdasdasd",
+      "customerID": 1003,
+      "saleStaffID": null,
+      "status": "Pending quotation",
+      "createdAt": "2024-06-29T10:28:42.623Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 4002,
+      "description": "asdasdasdfasd",
+      "customerID": 7008,
+      "saleStaffID": null,
+      "status": "Unapproved",
+      "createdAt": "2024-07-01T06:31:14.173Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 5002,
+      "description": "asdasd",
+      "customerID": 3002,
+      "saleStaffID": null,
+      "status": "Unapproved",
+      "createdAt": "2024-07-03T07:45:53.193Z",
+      "recievedAt": null,
+      "endAt": null
+    },
+    {
+      "id": 6002,
+      "description": "dasdasd",
+      "customerID": 5002,
+      "saleStaffID": null,
+      "status": "Unapproved",
+      "createdAt": "2024-07-03T15:49:37.800Z",
+      "recievedAt": null,
+      "endAt": null
+    }
+  ]
+}
